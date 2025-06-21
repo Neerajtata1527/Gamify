@@ -138,14 +138,6 @@ color:#E0E0E0;
   }
 }
 
-.nav-pills {rizontal lay
-  flex-direction: row !important; 
-  flex-wrap: nowrap !important; 
-  overflow-x: auto; 
-  white-space: nowrap; 
-}
-
-
 @media (max-width: 767.98px) {
   .nav-item {
     margin-right: 8px; 
