@@ -1,0 +1,143 @@
+{% include "header.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks | Gamify E-Commerce</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-3 py-md-5">
+    <h2 class="text-center mb-3 mb-md-4 text-white">🎯 Complete Tasks & Earn Rewards!</h2>
+    
+    <!-- Points Display -->
+    <div class="text-center mb-3 mb-md-4 text-white">
+        <h4>Total Points: <span id="total-points">{{ points }}</span> 🪙</h4>
+        <div class="text-center mt-2">
+            <button class="btn btn-danger btn-sm" id="reset-btn">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Points
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-3 g-md-4 justify-content-center">
+        <!-- Task 1 -->
+        <div class="col-md-4 col-sm-6 col-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Daily Login</h5>
+                    <p class="card-text">Login today and earn <strong>10 points</strong>!</p>
+                    <button class="btn btn-success complete-btn" data-points="10">Complete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="col-md-4 col-sm-6 col-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Add to Wishlist</h5>
+                    <p class="card-text">Add 3 items to wishlist and earn <strong>20 points</strong>!</p>
+                    <button class="btn btn-success complete-btn" data-points="20">Complete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="col-md-4 col-sm-6 col-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Follow on Instagram</h5>
+                    <p class="card-text">Follow us and earn <strong>30 points</strong>!</p>
+                    <button class="btn btn-success complete-btn" data-points="30">Complete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 4 -->
+        <div class="col-md-4 col-sm-6 col-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Write a Product Review</h5>
+                    <p class="card-text">Write a review and earn <strong>40 points</strong>!</p>
+                    <button class="btn btn-success complete-btn" data-points="40">Complete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 5 -->
+        <div class="col-md-4 col-sm-6 col-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Share on Social Media</h5>
+                    <p class="card-text">Share and earn <strong>50 points</strong>!</p>
+                    <button class="btn btn-success complete-btn" data-points="50">Complete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert -->
+    <div id="task-alert" class="alert alert-success text-center mt-3 mt-md-4 d-none" role="alert"></div>
+</div>
+
+<script>
+    const totalPointsDisplay = document.getElementById('total-points');
+    const alertBox = document.getElementById('task-alert');
+    const buttons = document.querySelectorAll('.complete-btn');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const points = parseInt(button.getAttribute('data-points'));
+            if (!button.disabled) {
+                axios.post('/earn_points', {points: points})
+                    .then(response => {
+                        totalPointsDisplay.textContent = response.data.total_points;
+                        alertBox.classList.remove('d-none');
+                        alertBox.textContent = `Task Completed! +${points} points`;
+                        button.disabled = true;
+                        button.classList.replace('btn-success', 'btn-secondary');
+                        button.textContent = 'Completed';
+                    })
+                    .catch(error => {
+                        alertBox.classList.remove('d-none');
+                        alertBox.classList.replace('alert-success', 'alert-danger');
+                        alertBox.textContent = 'Error completing task. Try again!';
+                    });
+            }
+        });
+    });
+
+    // Reset functionality
+    const resetBtn = document.getElementById('reset-btn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', async () => {
+            if (confirm("Reset all your progress?")) {
+                try {
+                    const response = await axios.post('/reset_points');
+                    document.getElementById('total-points').textContent = '0';
+                    
+                    // Reset task buttons
+                    document.querySelectorAll('.complete-btn').forEach(btn => {
+                        btn.disabled = false;
+                        btn.classList.replace('btn-secondary', 'btn-success');
+                        btn.textContent = 'Complete';
+                    });
+                    
+                    alert('Fresh start! Points reset 🎉');
+                } catch (error) {
+                    alert('Oops! Reset failed: ' + error.message);
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
+{% include "footer.html" %}
+
+ 

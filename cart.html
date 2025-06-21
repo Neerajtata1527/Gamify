@@ -1,0 +1,179 @@
+{% include "header.html" %}
+
+<div class="container">
+    <div class="text-center mt-3 mt-md-4">
+        <h4>Total Points: <span id="total-points">{{ points }}</span> 🪙</h4>
+        <div class="text-center mt-2">
+            <button class="btn btn-danger btn-sm" id="reset-btn">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Points
+            </button>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center flex-wrap gap-3 mt-3 mt-md-4">
+        <!-- Luck Card -->
+        <div class="card mb-3" style="width: 100%; max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4 col-5">
+                    <img src="./static/luck.png" class="img-fluid rounded-start w-100 h-100" alt="Luck" style="object-fit: cover;">
+                </div>
+                <div class="col-md-8 col-7">
+                    <div class="card-body">
+                        <h5 class="card-title">🍀 Luck +5 (150 points)</h5>
+                        <p class="card-text">A mysterious force aligns in your favor today.</p>
+                        <button class="btn btn-success redeem-btn" data-cost="150">Redeem</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Focus Card -->
+        <div class="card mb-3" style="width: 100%; max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4 col-5">
+                    <img src="./static/brain.png" class="img-fluid rounded-start w-100 h-100" alt="Focus" style="object-fit: cover;">
+                </div>
+                <div class="col-md-8 col-7">
+                    <div class="card-body">
+                        <h5 class="card-title">🧠 Focus +3 (200 points)</h5>
+                        <p class="card-text">Your mind sharpens like a blade honed by monks.</p>
+                        <button class="btn btn-success redeem-btn" data-cost="200">Redeem</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confidence Card -->
+        <div class="card mb-3" style="width: 100%; max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4 col-5">
+                    <img src="./static/confidence.png" class="img-fluid rounded-start w-100 h-100" alt="Confidence" style="object-fit: cover;">
+                </div>
+                <div class="col-md-8 col-7">
+                    <div class="card-body">
+                        <h5 class="card-title">❤️ Confidence +5 (250 points)</h5>
+                        <p class="card-text">You stand taller. Your voice sounds stronger.</p>
+                        <button class="btn btn-success redeem-btn" data-cost="250">Redeem</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charisma Card -->
+        <div class="card mb-3" style="width: 100%; max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4 col-5">
+                    <img src="./static/charisma.png" class="img-fluid rounded-start w-100 h-100" alt="Charisma" style="object-fit: cover;">
+                </div>
+                <div class="col-md-8 col-7">
+                    <div class="card-body">
+                        <h5 class="card-title">🌟 Charisma +2 (180 points)</h5>
+                        <p class="card-text">Unlock your hidden charm!</p>
+                        <button class="btn btn-success redeem-btn" data-cost="180">Redeem</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep Quality Card -->
+        <div class="card mb-3" style="width: 100%; max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4 col-5">
+                    <img src="./static/sleep.png" class="img-fluid rounded-start w-100 h-100" alt="Sleep" style="object-fit: cover;">
+                </div>
+                <div class="col-md-8 col-7">
+                    <div class="card-body">
+                        <h5 class="card-title">😴 Sleep Quality +10 (120 points)</h5>
+                        <p class="card-text">Tonight, sleep will come gently and deeply.</p>
+                        <button class="btn btn-success redeem-btn" data-cost="120">Redeem</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Box -->
+    <div id="redeem-alert" class="alert text-center mt-3 mt-md-4 d-none" role="alert"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+// Enhanced redeem functionality with proper error popup
+document.querySelectorAll('.redeem-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        const cost = parseInt(button.getAttribute('data-cost'));
+        const currentPoints = parseInt(document.getElementById('total-points').textContent);
+        
+        if (currentPoints < cost) {
+            // Create and show Bootstrap toast notification
+            const toastHTML = `
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header bg-danger text-white">
+                            <strong class="me-auto">Insufficient Points</strong>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body text-dark">
+                            You need ${cost - currentPoints} more points to redeem this item!
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Inject the toast
+            document.body.insertAdjacentHTML('beforeend', toastHTML);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                const toast = document.querySelector('.toast.show');
+                if (toast) {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.parentElement.remove(), 300);
+                }
+            }, 3000);
+            
+            return;
+        }
+        
+        // Original redeem logic
+        axios.post('/redeem', { cost: cost })
+            .then(response => {
+                const data = response.data;
+                document.getElementById('total-points').textContent = data.total_points;
+                
+                if (data.success) {
+                    button.disabled = true;
+                    button.classList.replace('btn-success', 'btn-secondary');
+                    button.textContent = 'Redeemed';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+});
+
+// Reset functionality
+const resetBtn = document.getElementById('reset-btn');
+if (resetBtn) {
+    resetBtn.addEventListener('click', async () => {
+        if (confirm("Reset all your hard-earned points?")) {
+            try {
+                const response = await axios.post('/reset_points');
+                document.getElementById('total-points').textContent = '0';
+                
+                document.querySelectorAll('.redeem-btn').forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.replace('btn-secondary', 'btn-success');
+                    btn.textContent = 'Redeem';
+                });
+                
+                alert('Points reset to zero! ⚡');
+            } catch (error) {
+                alert('Reset failed! ' + error.message);
+            }
+        }
+    });
+}
+</script>
+{% include "footer.html" %}

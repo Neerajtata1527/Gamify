@@ -1,0 +1,45 @@
+{% include "header.html" %}
+
+<!-- centered hero -->
+<div class="px-3 px-md-4 py-4 py-md-5 my-3 my-md-5 text-center">
+  <!-- Logo Image -->
+  <img
+    class="img d-block mx-auto mb-3 mb-md-4"
+    src="https://imgs.search.brave.com/U8K6_SmL_J2mm0yg96VMwtnKBz-0VYqFFuu-8GFmH-Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2VhLzhi/L2E1L2VhOGJhNWRl/MTBiNzJkMWIyMWM2/ZDVhYjFhYjE4MDhm/LmpwZw"
+    alt="GamifyShop"
+  >
+
+  <!-- Hero Heading -->
+  <h1 class="heading display-5 fw-bold">Gamify Your Shopping Journey</h1>
+
+  <div class="col-lg-6 mx-auto">
+    <!-- Hero Description -->
+    <p class="para subtext lead mb-4 mb-md-5">
+     It's not magic, it's motivation. Do small things, earn big rewards — no wallet needed
+    </p>
+
+    <!-- Buttons -->
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+      <a href="/task" class="btn btn-info btn-shadow btn-lg px-3 px-md-4 gap-2 gap-md-3" role="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 64 64" fill="currentColor">
+          <defs>
+            <mask id="rupee-cutout">
+              <rect width="64" height="64" fill="white"/>
+              <text x="32" y="42" text-anchor="middle" font-size="28" font-family="Segoe UI, sans-serif" font-weight="600" fill="black">₹</text>
+            </mask>
+          </defs>
+          <circle cx="32" cy="32" r="20" mask="url(#rupee-cutout)" />
+        </svg>
+        Earn
+      </a>
+      <a href="/cart" class="btn btn-info btn-shadow btn-lg px-3 px-md-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-bag-fill" viewBox="0 0 16 16">
+          <path d="M8 1a2 2 0 0 0-2 2v1H3.5A1.5 1.5 0 0 0 2 5.5v8A1.5 1.5 0 0 0 3.5 15h9A1.5 1.5 0 0 0 14 13.5v-8A1.5 1.5 0 0 0 12.5 4H10V3a2 2 0 0 0-2-2zm-1 3V3a1 1 0 0 1 2 0v1H7z"/>
+        </svg>
+        Shop
+      </a>
+    </div>
+  </div>
+</div>
+{% include "footer.html" %}
+</html>
